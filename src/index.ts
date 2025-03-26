@@ -1,25 +1,12 @@
 import express, { Request, Response } from "express";
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
+import { createServer } from "@playwright/mcp";
 
-const server = new McpServer({
-  name: "example-server",
-  version: "1.0.0",
+const server = createServer({
+  launchOptions: { headless: true },
 });
 
-// ... set up server resources, tools, and prompts ...
-
 const app = express();
-server.resource("config", "config://app", async (uri) => ({
-  contents: [
-    {
-      uri: uri.href,
-      text: "App configuration here",
-    },
-  ],
-}));
-// to support multiple simultaneous connections we have a lookup object from
-// sessionId to transport
 const transports: { [sessionId: string]: SSEServerTransport } = {};
 
 app.get("/sse", async (_: Request, res: Response) => {
