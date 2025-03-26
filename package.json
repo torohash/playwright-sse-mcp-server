@@ -1,18 +1,27 @@
 {
   "name": "playwright-sse-mcp-server",
-  "module": "index.ts",
-  "type": "module",
-  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/torohash/playwright-sse-mcp-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/torohash/playwright-sse-mcp-server/issues"
+  },
+  "homepage": "https://github.com/torohash/playwright-sse-mcp-server#readme",
   "devDependencies": {
-    "@types/bun": "latest",
-    "@types/express": "^5.0.1"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.8.0",
-    "@playwright/mcp": "^0.0.3",
-    "express": "^4.21.2"
+    "@types/node": "^20.11.30",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.2"
   }
 }
