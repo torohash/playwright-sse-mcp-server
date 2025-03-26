@@ -20,8 +20,15 @@
   },
   "homepage": "https://github.com/torohash/playwright-sse-mcp-server#readme",
   "devDependencies": {
+    "@types/express": "^5.0.1",
     "@types/node": "^20.11.30",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.8.0",
+    "@playwright/mcp": "^0.0.3",
+    "express": "^5.0.1",
+    "hono": "^4.7.5"
   }
 }
