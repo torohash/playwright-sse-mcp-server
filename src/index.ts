@@ -10,7 +10,14 @@ const server = new McpServer({
 // ... set up server resources, tools, and prompts ...
 
 const app = express();
-
+server.resource("config", "config://app", async (uri) => ({
+  contents: [
+    {
+      uri: uri.href,
+      text: "App configuration here",
+    },
+  ],
+}));
 // to support multiple simultaneous connections we have a lookup object from
 // sessionId to transport
 const transports: { [sessionId: string]: SSEServerTransport } = {};
