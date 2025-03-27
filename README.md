@@ -107,7 +107,9 @@ MCP Servers -> MCP設定を編集 -> 以下を記入します（`PORT`はサー�
 
 毎回プロジェクトディレクトリに移動してdocker composeコマンドを実行するのは面倒です。以下の方法を使用すると、どこからでも簡単にサーバーを起動・停止できます。
 
-### シェル関数を使用した方法
+### シェルスクリプトを使用した方法
+
+このプロジェクトには、サーバーの起動・停止・ログ表示を簡単に行うためのシェルスクリプトが含まれています。
 
 1. ホームディレクトリに`mcps`ディレクトリを作成し、そこにプロジェクトを配置します：
 
@@ -117,91 +119,12 @@ mkdir -p ~/mcps
 git clone https://github.com/your-username/playwright-sse-mcp-server.git ~/mcps/playwright-sse-mcp-server
 ```
 
-2. `.bashrc`（または`.zshrc`など使用しているシェルの設定ファイル）に以下のシェル関数を追加します：
+2. `.bashrc`（または`.zshrc`など使用しているシェルの設定ファイル）に以下の行を追加して、シェルスクリプトを読み込みます：
 
 ```bash
 vim ~/.bashrc
 # Playwright MCP Server
-playwright-mcp-start() {
-  local port=3002
-  local restart_policy="no"
-  local help=false
-  
-  # オプションの解析
-  while [[ $# -gt 0 ]]; do
-    case "$1" in
-      -p|--persistent)
-        restart_policy="unless-stopped"
-        shift
-        ;;
-      -r|--restart)
-        if [[ -n "$2" && "$2" != -* ]]; then
-          restart_policy="$2"
-          shift 2
-        else
-          echo "Error: --restart requires an argument."
-          return 1
-        fi
-        ;;
-      -P|--port)
-        if [[ -n "$2" && "$2" != -* ]]; then
-          port="$2"
-          shift 2
-        else
-          echo "Error: --port requires an argument."
-          return 1
-        fi
-        ;;
-      -h|--help)
-        help=true
-        shift
-        ;;
-      *)
-        # 後方互換性のために、数字のみの引数はポート番号として扱う
-        if [[ "$1" =~ ^[0-9]+$ ]]; then
-          port="$1"
-          shift
-        else
-          echo "Unknown option: $1"
-          help=true
-          shift
-        fi
-        ;;
-    esac
-  done
-  
-  # ヘルプの表示
-  if [[ "$help" = true ]]; then
-    echo "Usage: playwright-mcp-start [OPTIONS]"
-    echo ""
-    echo "Options:"
-    echo "  -p, --persistent       永続的に実行（システム再起動時に自動起動）"
-    echo "  -r, --restart POLICY   再起動ポリシーを指定（no, always, on-failure, unless-stopped）"
-    echo "  -P, --port PORT        ポート番号を指定（デフォルト: 3002）"
-    echo "  -h, --help             このヘルプメッセージを表示"
-    echo ""
-    echo "Examples:"
-    echo "  playwright-mcp-start                   # デフォルト設定で起動（ポート3002、再起動なし）"
-    echo "  playwright-mcp-start -p                # 永続モードで起動（システム再起動時に自動起動）"
-    echo "  playwright-mcp-start -P 4000           # ポート4000で起動"
-    echo "  playwright-mcp-start -P 4000 -p        # ポート4000で永続モードで起動"
-    echo "  playwright-mcp-start -r always         # 常に再起動するモードで起動"
-    return 0
-  fi
-  
-  # サーバーの起動
-  (cd ~/mcps/playwright-sse-mcp-server && PORT=$port RESTART_POLICY=$restart_policy docker compose up -d)
-  echo "Playwright MCP Server started on port $port with restart policy: $restart_policy"
-}
-
-playwright-mcp-stop() {
-  (cd ~/mcps/playwright-sse-mcp-server && docker compose down)
-  echo "Playwright MCP Server stopped"
-}
-
-playwright-mcp-logs() {
-  (cd ~/mcps/playwright-sse-mcp-server && docker compose logs -f)
-}
+source ~/mcps/playwright-sse-mcp-server/scripts/playwright-mcp.sh
 ```
 
 3. シェルを再起動するか、設定ファイルを再読み込みします：
@@ -260,7 +183,11 @@ playwright-mcp-start -h
 playwright-mcp-start --help
 ```
 
-この方法では、フラグオプションを使用して柔軟に設定を変更できるため、より使いやすくなっています。
+この方法では、フラグオプションを使用して柔軟に設定を変更できるため、より使いやすくなっています。また、シェルスクリプトを別ファイルに分離することで、.bashrcファイルがシンプルになり、管理が容易になります。
+
+### シェルスクリプトのカスタマイズ
+
+シェルスクリプトは`~/mcps/playwright-sse-mcp-server/scripts/playwright-mcp.sh`にあります。必要に応じて、このファイルを編集してカスタマイズすることができます。
 
 ## 注意事項
 
