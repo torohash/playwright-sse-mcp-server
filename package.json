@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.8.0",
-    "@playwright/mcp": "github:microsoft/playwright-mcp#8f3214a06ac6867dbd7299971a5bfa6426db995b",
+    "@playwright/mcp": "^0.0.4",
     "express": "^5.0.1"
   }
 }
