@@ -49,6 +49,22 @@ playwright-sse-mcp-server:3002/sse
 localhost:3002/sse
 ```
 
+### Roo Codeからの接続
+
+MCP Servers -> MCP設定を編集 -> 以下を記入します
+
+```json
+{
+  "mcpServers": {
+    "playwright-sse-mcp-server-local": {
+      "url": "http://localhost:3002/sse"
+    }
+  }
+}
+```
+
+※2025/03/27現在、ClineはSSEをサポートしていない為使えません。
+
 ## 注意事項
 
 - このサーバーはheadlessモードでPlaywrightを実行します
