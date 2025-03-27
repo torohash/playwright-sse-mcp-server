@@ -65,6 +65,41 @@ MCP Servers -> MCP設定を編集 -> 以下を記入します
 
 ※2025/03/27現在、ClineはSSEをサポートしていない為使えません。
 
+## 便利な使用方法
+
+毎回プロジェクトディレクトリに移動してdocker composeコマンドを実行するのは面倒です。以下の方法を使用すると、どこからでも簡単にサーバーを起動・停止できます。
+
+### エイリアスを使用した方法
+
+1. ホームディレクトリに`mcps`ディレクトリを作成し、そこにプロジェクトを配置します：
+
+```bash
+mkdir -p ~/mcps
+# プロジェクトをmcpsディレクトリに移動またはクローン
+git clone https://github.com/your-username/playwright-sse-mcp-server.git ~/mcps/playwright-sse-mcp-server
+```
+
+2. `.bashrc`（または`.zshrc`など使用しているシェルの設定ファイル）に以下のエイリアスを追加します：
+
+```bash
+# Playwright MCP Server
+alias playwright-mcp-start='(cd ~/mcps/playwright-sse-mcp-server && docker compose up -d)'
+alias playwright-mcp-stop='(cd ~/mcps/playwright-sse-mcp-server && docker compose down)'
+alias playwright-mcp-logs='(cd ~/mcps/playwright-sse-mcp-server && docker compose logs -f)'
+```
+
+3. シェルを再起動するか、設定ファイルを再読み込みします：
+
+```bash
+source ~/.bashrc
+```
+
+これで、どこからでも以下のコマンドを使用できるようになります：
+
+- `playwright-mcp-start` - サーバーを起動
+- `playwright-mcp-stop` - サーバーを停止
+- `playwright-mcp-logs` - サーバーのログを表示
+
 ## 注意事項
 
 - このサーバーはheadlessモードでPlaywrightを実行します
