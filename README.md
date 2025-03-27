@@ -103,6 +103,35 @@ MCP Servers -> MCP設定を編集 -> 以下を記入します（`PORT`はサー�
 
 ※2025/03/27現在、ClineはSSEをサポートしていない為使えません。
 
+#### コンテナ環境でのRoo Codeからの接続
+
+同じDocker Network内で実行されているRoo Codeコンテナからは、以下のようにMCP設定を行います：
+
+```json
+{
+  "mcpServers": {
+    "playwright-sse-mcp-server-local": {
+      "url": "http://playwright-sse-mcp-server:3002/sse"
+    }
+  }
+}
+```
+
+**docker-compose.yml設定例**：
+
+```yaml
+services:
+  # Roo Code コンテナ
+  roo-code:
+    # 略
+
+networks:
+  mcp-network:
+    external: true
+```
+
+この設定により、Roo Codeコンテナからplaywright-sse-mcp-serverコンテナに接続し、ブラウザ操作機能を利用できます。コンテナ名（`playwright-sse-mcp-server`）をホスト名として使用することで、Docker Network内での名前解決が可能になります。
+
 ## 便利な使用方法
 
 毎回プロジェクトディレクトリに移動してdocker composeコマンドを実行するのは面倒です。以下の方法を使用すると、どこからでも簡単にサーバーを起動・停止できます。
@@ -124,38 +153,16 @@ git clone https://github.com/torohash/playwright-sse-mcp-server.git /path/to/ins
 # Playwright MCP Server
 export PLAYWRIGHT_MCP_HOME="/path/to/installation"
 source "$PLAYWRIGHT_MCP_HOME/scripts/playwright-mcp.sh"
+
+# 具体例（絶対パス利用）
+export PLAYWRIGHT_MCP_HOME="$HOME/mcps/playwright-sse-mcp-server"  # 実際のパスに置き換えてください
+source "$PLAYWRIGHT_MCP_HOME/scripts/playwright-mcp.sh"
 ```
 
 3. シェルを再起動するか、設定ファイルを再読み込みします：
 
 ```bash
 source ~/.bashrc
-```
-
-> **重要**: 必ず`export PLAYWRIGHT_MCP_HOME`を設定してから`source`コマンドを実行してください。これにより、スクリプトが正しいパスを見つけることができます。
-
-#### トラブルシューティング
-
-「No such file or directory」エラーが発生した場合は、以下を確認してください：
-
-1. `PLAYWRIGHT_MCP_HOME`環境変数が正しいパスを指しているか確認します：
-
-```bash
-echo $PLAYWRIGHT_MCP_HOME
-```
-
-2. スクリプトファイルが存在するか確認します：
-
-```bash
-ls -la $PLAYWRIGHT_MCP_HOME/scripts/playwright-mcp.sh
-```
-
-3. 絶対パスを使用して試してみます：
-
-```bash
-# .bashrcに追加
-export PLAYWRIGHT_MCP_HOME="$HOME/mcps/playwright-sse-mcp-server"  # 実際のパスに置き換えてください
-source "$PLAYWRIGHT_MCP_HOME/scripts/playwright-mcp.sh"
 ```
 
 これで、どこからでも以下のコマンドを使用できるようになります：
