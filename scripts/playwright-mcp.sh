@@ -1,10 +1,35 @@
 #!/bin/bash
 
-# スクリプト自身のパスを取得
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# スクリプト自身のパスを取得（sourceコマンドでも動作するように改善）
+if [ -n "${BASH_SOURCE[0]}" ]; then
+  # Bash
+  SCRIPT_PATH="${BASH_SOURCE[0]}"
+elif [ -n "$ZSH_VERSION" ]; then
+  # Zsh
+  SCRIPT_PATH="${(%):-%x}"
+else
+  # その他のシェル（推測）
+  SCRIPT_PATH="$0"
+fi
+
+# 絶対パスに変換
+if [ -z "$SCRIPT_PATH" ]; then
+  echo "警告: スクリプトのパスを特定できませんでした。環境変数PLAYWRIGHT_MCP_HOMEを設定してください。"
+  # デフォルトのパスを使用
+  SCRIPT_DIR="$HOME/mcps/playwright-sse-mcp-server/scripts"
+else
+  SCRIPT_DIR="$( cd "$( dirname "$SCRIPT_PATH" )" && pwd )"
+fi
 
 # 環境変数が設定されていない場合は、スクリプトの場所から推測
 PLAYWRIGHT_MCP_HOME=${PLAYWRIGHT_MCP_HOME:-"$( dirname "$SCRIPT_DIR" )"}
+
+# パスが存在するか確認
+if [ ! -d "$PLAYWRIGHT_MCP_HOME" ]; then
+  echo "警告: ディレクトリ $PLAYWRIGHT_MCP_HOME が存在しません。"
+  echo "環境変数PLAYWRIGHT_MCP_HOMEを正しいパスに設定してください。"
+  echo "例: export PLAYWRIGHT_MCP_HOME=\"$HOME/mcps/playwright-sse-mcp-server\""
+fi
 
 # Playwright MCP Server シェル関数
 

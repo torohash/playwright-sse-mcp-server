@@ -121,26 +121,42 @@ git clone https://github.com/torohash/playwright-sse-mcp-server.git /path/to/ins
 2. `.bashrc`（または`.zshrc`など使用しているシェルの設定ファイル）に以下の行を追加して、シェルスクリプトを読み込みます：
 
 ```bash
-vim ~/.bashrc
-# Playwright MCP Server
-source /path/to/installation/scripts/playwright-mcp.sh
-```
-
-3. 必要に応じて、環境変数を設定してインストールパスを指定することもできます：
-
-```bash
 # Playwright MCP Server
 export PLAYWRIGHT_MCP_HOME="/path/to/installation"
 source "$PLAYWRIGHT_MCP_HOME/scripts/playwright-mcp.sh"
 ```
 
-4. シェルを再起動するか、設定ファイルを再読み込みします：
+3. シェルを再起動するか、設定ファイルを再読み込みします：
 
 ```bash
 source ~/.bashrc
 ```
 
-> **注意**: シェルスクリプトは自身のパスを自動的に検出するため、環境変数`PLAYWRIGHT_MCP_HOME`を設定しなくても正しく動作します。ただし、複数のインストールがある場合や、特定のパスを明示的に指定したい場合は、環境変数を設定することをお勧めします。
+> **重要**: 必ず`export PLAYWRIGHT_MCP_HOME`を設定してから`source`コマンドを実行してください。これにより、スクリプトが正しいパスを見つけることができます。
+
+#### トラブルシューティング
+
+「No such file or directory」エラーが発生した場合は、以下を確認してください：
+
+1. `PLAYWRIGHT_MCP_HOME`環境変数が正しいパスを指しているか確認します：
+
+```bash
+echo $PLAYWRIGHT_MCP_HOME
+```
+
+2. スクリプトファイルが存在するか確認します：
+
+```bash
+ls -la $PLAYWRIGHT_MCP_HOME/scripts/playwright-mcp.sh
+```
+
+3. 絶対パスを使用して試してみます：
+
+```bash
+# .bashrcに追加
+export PLAYWRIGHT_MCP_HOME="$HOME/mcps/playwright-sse-mcp-server"  # 実際のパスに置き換えてください
+source "$PLAYWRIGHT_MCP_HOME/scripts/playwright-mcp.sh"
+```
 
 これで、どこからでも以下のコマンドを使用できるようになります：
 
