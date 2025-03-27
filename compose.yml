@@ -4,12 +4,13 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "3002:3002"
+      - "${PORT:-3002}:${PORT:-3002}"
     networks:
       - mcp-network
     container_name: playwright-sse-mcp-server
     environment:
       - NODE_ENV=production
+      - PORT=${PORT:-3002}
 
 networks:
   mcp-network:

@@ -22,6 +22,7 @@ COPY --chown=node:node ./ ./
 
 RUN npx playwright install chromium
 
+# デフォルトポートは3002ですが、環境変数PORTで上書き可能です
 EXPOSE 3002
 
 CMD ["npm", "start"]
