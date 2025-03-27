@@ -123,9 +123,75 @@ git clone https://github.com/your-username/playwright-sse-mcp-server.git ~/mcps/
 vim ~/.bashrc
 # Playwright MCP Server
 playwright-mcp-start() {
-  local port=${1:-3002}  # 引数が指定されていない場合はデフォルト値3002を使用
-  (cd ~/mcps/playwright-sse-mcp-server && PORT=$port docker compose up -d)
-  echo "Playwright MCP Server started on port $port"
+  local port=3002
+  local restart_policy="no"
+  local help=false
+  
+  # オプションの解析
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -p|--persistent)
+        restart_policy="unless-stopped"
+        shift
+        ;;
+      -r|--restart)
+        if [[ -n "$2" && "$2" != -* ]]; then
+          restart_policy="$2"
+          shift 2
+        else
+          echo "Error: --restart requires an argument."
+          return 1
+        fi
+        ;;
+      -P|--port)
+        if [[ -n "$2" && "$2" != -* ]]; then
+          port="$2"
+          shift 2
+        else
+          echo "Error: --port requires an argument."
+          return 1
+        fi
+        ;;
+      -h|--help)
+        help=true
+        shift
+        ;;
+      *)
+        # 後方互換性のために、数字のみの引数はポート番号として扱う
+        if [[ "$1" =~ ^[0-9]+$ ]]; then
+          port="$1"
+          shift
+        else
+          echo "Unknown option: $1"
+          help=true
+          shift
+        fi
+        ;;
+    esac
+  done
+  
+  # ヘルプの表示
+  if [[ "$help" = true ]]; then
+    echo "Usage: playwright-mcp-start [OPTIONS]"
+    echo ""
+    echo "Options:"
+    echo "  -p, --persistent       永続的に実行（システム再起動時に自動起動）"
+    echo "  -r, --restart POLICY   再起動ポリシーを指定（no, always, on-failure, unless-stopped）"
+    echo "  -P, --port PORT        ポート番号を指定（デフォルト: 3002）"
+    echo "  -h, --help             このヘルプメッセージを表示"
+    echo ""
+    echo "Examples:"
+    echo "  playwright-mcp-start                   # デフォルト設定で起動（ポート3002、再起動なし）"
+    echo "  playwright-mcp-start -p                # 永続モードで起動（システム再起動時に自動起動）"
+    echo "  playwright-mcp-start -P 4000           # ポート4000で起動"
+    echo "  playwright-mcp-start -P 4000 -p        # ポート4000で永続モードで起動"
+    echo "  playwright-mcp-start -r always         # 常に再起動するモードで起動"
+    return 0
+  fi
+  
+  # サーバーの起動
+  (cd ~/mcps/playwright-sse-mcp-server && PORT=$port RESTART_POLICY=$restart_policy docker compose up -d)
+  echo "Playwright MCP Server started on port $port with restart policy: $restart_policy"
 }
 
 playwright-mcp-stop() {
@@ -146,12 +212,55 @@ source ~/.bashrc
 
 これで、どこからでも以下のコマンドを使用できるようになります：
 
-- `playwright-mcp-start` - デフォルトポート（3002）でサーバーを起動
-- `playwright-mcp-start 4000` - 指定したポート（この例では4000）でサーバーを起動
+#### 基本的な使用方法
+
+- `playwright-mcp-start` - デフォルト設定（ポート3002、再起動なし）でサーバーを起動
 - `playwright-mcp-stop` - サーバーを停止
 - `playwright-mcp-logs` - サーバーのログを表示
 
-この方法では、ポート番号を引数として渡すことができるため、固定のエイリアスを複数用意する必要がなく、より柔軟に使用できます。
+#### 永続モードの使用
+
+永続モードを使用すると、システム再起動時にサーバーが自動的に起動します：
+
+```bash
+playwright-mcp-start -p
+# または
+playwright-mcp-start --persistent
+```
+
+#### カスタムポートの使用
+
+```bash
+playwright-mcp-start -P 4000
+# または
+playwright-mcp-start --port 4000
+```
+
+#### 永続モードとカスタムポートの組み合わせ
+
+```bash
+playwright-mcp-start -P 4000 -p
+# または
+playwright-mcp-start --port 4000 --persistent
+```
+
+#### 特定の再起動ポリシーの指定
+
+```bash
+playwright-mcp-start -r always
+# または
+playwright-mcp-start --restart always
+```
+
+#### ヘルプの表示
+
+```bash
+playwright-mcp-start -h
+# または
+playwright-mcp-start --help
+```
+
+この方法では、フラグオプションを使用して柔軟に設定を変更できるため、より使いやすくなっています。
 
 ## 注意事項
 

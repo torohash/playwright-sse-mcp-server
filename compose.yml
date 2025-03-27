@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    restart: ${RESTART_POLICY:-no}
     ports:
       - "${PORT:-3002}:${PORT:-3002}"
     networks:
