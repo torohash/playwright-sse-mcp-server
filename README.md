@@ -111,12 +111,11 @@ MCP Servers -> MCP設定を編集 -> 以下を記入します（`PORT`はサー�
 
 このプロジェクトには、サーバーの起動・停止・ログ表示を簡単に行うためのシェルスクリプトが含まれています。
 
-1. ホームディレクトリに`mcps`ディレクトリを作成し、そこにプロジェクトを配置します：
+1. プロジェクトをクローンまたはダウンロードします：
 
 ```bash
-mkdir -p ~/mcps
-# プロジェクトをmcpsディレクトリに移動またはクローン
-git clone https://github.com/your-username/playwright-sse-mcp-server.git ~/mcps/playwright-sse-mcp-server
+# 任意のディレクトリにクローン
+git clone https://github.com/torohash/playwright-sse-mcp-server.git /path/to/installation
 ```
 
 2. `.bashrc`（または`.zshrc`など使用しているシェルの設定ファイル）に以下の行を追加して、シェルスクリプトを読み込みます：
@@ -124,14 +123,24 @@ git clone https://github.com/your-username/playwright-sse-mcp-server.git ~/mcps/
 ```bash
 vim ~/.bashrc
 # Playwright MCP Server
-source ~/mcps/playwright-sse-mcp-server/scripts/playwright-mcp.sh
+source /path/to/installation/scripts/playwright-mcp.sh
 ```
 
-3. シェルを再起動するか、設定ファイルを再読み込みします：
+3. 必要に応じて、環境変数を設定してインストールパスを指定することもできます：
+
+```bash
+# Playwright MCP Server
+export PLAYWRIGHT_MCP_HOME="/path/to/installation"
+source "$PLAYWRIGHT_MCP_HOME/scripts/playwright-mcp.sh"
+```
+
+4. シェルを再起動するか、設定ファイルを再読み込みします：
 
 ```bash
 source ~/.bashrc
 ```
+
+> **注意**: シェルスクリプトは自身のパスを自動的に検出するため、環境変数`PLAYWRIGHT_MCP_HOME`を設定しなくても正しく動作します。ただし、複数のインストールがある場合や、特定のパスを明示的に指定したい場合は、環境変数を設定することをお勧めします。
 
 これで、どこからでも以下のコマンドを使用できるようになります：
 
@@ -187,7 +196,19 @@ playwright-mcp-start --help
 
 ### シェルスクリプトのカスタマイズ
 
-シェルスクリプトは`~/mcps/playwright-sse-mcp-server/scripts/playwright-mcp.sh`にあります。必要に応じて、このファイルを編集してカスタマイズすることができます。
+シェルスクリプトは`scripts/playwright-mcp.sh`にあります。必要に応じて、このファイルを編集してカスタマイズすることができます。
+
+#### 環境変数
+
+シェルスクリプトは以下の環境変数を使用します：
+
+- `PLAYWRIGHT_MCP_HOME`: プロジェクトのインストールディレクトリ。設定されていない場合は、スクリプトの場所から自動的に検出されます。
+
+例えば、以下のように環境変数を設定することで、カスタムパスを指定できます：
+
+```bash
+export PLAYWRIGHT_MCP_HOME="/path/to/custom/installation"
+```
 
 ## 注意事項
 

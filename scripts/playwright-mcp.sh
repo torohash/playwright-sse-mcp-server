@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# スクリプト自身のパスを取得
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# 環境変数が設定されていない場合は、スクリプトの場所から推測
+PLAYWRIGHT_MCP_HOME=${PLAYWRIGHT_MCP_HOME:-"$( dirname "$SCRIPT_DIR" )"}
+
 # Playwright MCP Server シェル関数
 
 # サーバーを起動する関数
@@ -71,17 +77,17 @@ playwright-mcp-start() {
   fi
   
   # サーバーの起動
-  (cd ~/mcps/playwright-sse-mcp-server && PORT=$port RESTART_POLICY=$restart_policy docker compose up -d)
+  (cd "$PLAYWRIGHT_MCP_HOME" && PORT=$port RESTART_POLICY=$restart_policy docker compose up -d)
   echo "Playwright MCP Server started on port $port with restart policy: $restart_policy"
 }
 
 # サーバーを停止する関数
 playwright-mcp-stop() {
-  (cd ~/mcps/playwright-sse-mcp-server && docker compose down)
+  (cd "$PLAYWRIGHT_MCP_HOME" && docker compose down)
   echo "Playwright MCP Server stopped"
 }
 
 # サーバーのログを表示する関数
 playwright-mcp-logs() {
-  (cd ~/mcps/playwright-sse-mcp-server && docker compose logs -f)
+  (cd "$PLAYWRIGHT_MCP_HOME" && docker compose logs -f)
 }
