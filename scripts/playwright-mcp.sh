@@ -116,3 +116,8 @@ playwright-mcp-stop() {
 playwright-mcp-logs() {
   (cd "$PLAYWRIGHT_MCP_HOME" && docker compose logs -f)
 }
+
+# サーバーのイメージをビルドする関数
+playwright-mcp-build() {
+  (cd "$PLAYWRIGHT_MCP_HOME" && docker compose build)
+}
