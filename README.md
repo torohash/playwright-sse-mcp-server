@@ -132,6 +132,39 @@ networks:
 
 この設定により、Roo Codeコンテナからplaywright-sse-mcp-serverコンテナに接続し、ブラウザ操作機能を利用できます。コンテナ名（`playwright-sse-mcp-server`）をホスト名として使用することで、Docker Network内での名前解決が可能になります。
 
+#### 開発コンテナ環境でのRoo Codeからの接続（ホスト経由）
+
+開発コンテナ内でRoo Codeを実行し、`mcp-network` に参加せずにホストマシン経由でこのMCPサーバーに接続する場合、以下のようにMCP設定を行います。
+
+**Docker Desktop (Mac/Windows) の場合:**
+
+```json
+{
+  "mcpServers": {
+    "playwright-sse-mcp-server-local": {
+      "url": "http://host.docker.internal:<PORT>/sse"
+    }
+  }
+}
+```
+
+**Linux の場合 (例: ブリッジゲートウェイIPを使用):**
+
+```json
+{
+  "mcpServers": {
+    "playwright-sse-mcp-server-local": {
+      "url": "http://172.17.0.1:<PORT>/sse"
+    }
+  }
+}
+```
+
+**注意:**
+
+*   `<PORT>` は、MCPサーバーがホスト上で公開しているポート番号（デフォルト: 3002）に置き換えてください。
+*   Linuxの場合は、`172.17.0.1` の部分を実際のホストIPアドレスまたはDockerブリッジネットワークのゲートウェイIPアドレスに置き換えてください。詳細は「開発コンテナからの接続（ホスト経由）」セクションを参照してください。
+
 ### 開発コンテナからの接続（ホスト経由）
 
 `mcp-network` に参加していない開発コンテナからこのMCPサーバーにアクセスする必要がある場合（例：既存プロジェクトとの兼ね合いでネットワーク変更が難しい場合）、ホストマシン経由で接続できます。
