@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.8.0",
-    "@playwright/mcp": "^0.0.9",
+    "@playwright/mcp": "^0.0.10",
     "express": "^5.0.1"
   }
 }
