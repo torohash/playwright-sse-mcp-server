@@ -2,10 +2,6 @@ import express, { Request, Response } from "express";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { createServer } from "@playwright/mcp";
 
-const server = createServer({
-  launchOptions: { headless: true },
-});
-
 const app = express();
 const transports: { [sessionId: string]: SSEServerTransport } = {};
 
