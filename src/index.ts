@@ -15,6 +15,9 @@ app.get("/sse", async (_: Request, res: Response) => {
   res.on("close", () => {
     delete transports[transport.sessionId];
   });
+  const server = createServer({
+    launchOptions: { headless: true },
+  });
   await server.connect(transport);
 });
 
